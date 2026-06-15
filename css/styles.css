@@ -1,0 +1,460 @@
+/* =============================================================
+   Tiny Planet Colony — styles
+   Cute futuristic sci-fi theme: bright colors, soft glass panels,
+   a sprinkle of pixel-art flavor via the Press Start 2P font.
+   ============================================================= */
+
+:root {
+  --bg-deep:   #14121c;
+  --bg-mid:    #1d1b2a;
+  --bg-space:  #08070d;
+  --panel:     rgba(24, 22, 34, 0.86);
+  --panel-2:   rgba(40, 36, 56, 0.92);
+  --stroke:    rgba(140, 130, 170, 0.32);
+  --text:      #e9e7f0;
+  --muted:     #9a93ad;
+
+  --energy:  #ffd23f;
+  --oxygen:  #4fe3c1;
+  --science: #b18cff;
+  --pop:     #ff8fb1;
+  --good:    #5ff08a;
+  --bad:     #ff6b6b;
+
+  --radius: 14px;
+  --pixel: 'Press Start 2P', monospace;
+  --sans: 'Nunito', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--bg-space);
+  user-select: none;
+}
+
+#game {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  /* starry gradient sky */
+  background:
+    radial-gradient(1200px 600px at 70% -10%, #3a2a8c 0%, transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, #2a4a8c 0%, transparent 55%),
+    linear-gradient(160deg, var(--bg-deep), var(--bg-space));
+}
+
+/* ----------------------------- HUD ----------------------------- */
+#hud {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(20,12,55,0.92), rgba(20,12,55,0.55));
+  border-bottom: 1px solid var(--stroke);
+  backdrop-filter: blur(8px);
+  flex-wrap: wrap;
+}
+
+.hud-title {
+  font-family: var(--pixel);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--oxygen);
+  text-shadow: 0 0 10px rgba(79,227,193,0.5);
+  white-space: nowrap;
+}
+
+.clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  margin-left: 4px;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.clock #clock-icon { font-size: 15px; }
+
+.objective {
+  display: inline-flex;
+  gap: 6px;
+}
+.obj {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.obj b { color: var(--text); font-size: 13px; }
+.obj.green.hit { border-color: var(--good); }
+.obj.green.hit b { color: var(--good); }
+.obj.threat.danger {
+  border-color: var(--bad);
+  animation: danger-pulse 1s ease-in-out infinite;
+}
+.obj.threat.danger b { color: var(--bad); }
+
+.resources {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.res {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  min-width: 96px;
+}
+.res-icon { font-size: 20px; }
+.res-info { display: flex; flex-direction: column; line-height: 1.1; }
+.res-val { font-size: 16px; font-weight: 800; }
+.res-rate { font-size: 11px; font-style: normal; color: var(--muted); }
+.res-rate.up   { color: var(--good); }
+.res-rate.down { color: var(--bad); }
+
+#res-energy  .res-icon { filter: drop-shadow(0 0 6px var(--energy)); }
+#res-oxygen  .res-icon { filter: drop-shadow(0 0 6px var(--oxygen)); }
+#res-science .res-icon { filter: drop-shadow(0 0 6px var(--science)); }
+#res-pop     .res-icon { filter: drop-shadow(0 0 6px var(--pop)); }
+
+.hud-controls { display: flex; gap: 6px; }
+.ctrl {
+  font-size: 18px;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform .08s, background .15s;
+}
+.ctrl:hover  { background: var(--panel-2); }
+.ctrl:active { transform: scale(0.9); }
+.ctrl { position: relative; }
+#btn-ff { font-weight: 800; font-size: 14px; }
+#btn-ff.fast { color: var(--energy); border-color: var(--energy); }
+
+/* little progress badge on the research button */
+.badge {
+  position: absolute;
+  top: -6px; right: -6px;
+  background: var(--science);
+  color: #1a1140;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 999px;
+  line-height: 1.3;
+}
+.badge.done { background: var(--good); }
+
+/* critical-resource warning pulse on a HUD pill */
+.res.danger {
+  border-color: var(--bad);
+  animation: danger-pulse 0.9s ease-in-out infinite;
+}
+@keyframes danger-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.0); }
+  50%      { box-shadow: 0 0 0 4px rgba(255,107,107,0.45); }
+}
+
+/* ----------------------------- WORLD ----------------------------- */
+#world {
+  flex: 1;
+  width: 100%;
+  display: block;
+  touch-action: none;          /* we handle pan/zoom ourselves */
+  image-rendering: pixelated;  /* crisp pixel-art flavor */
+  cursor: grab;
+}
+#world:active { cursor: grabbing; }
+
+/* ----------------------------- BUILD DOCK ----------------------------- */
+#dock {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: linear-gradient(0deg, rgba(20,12,55,0.92), rgba(20,12,55,0.4));
+  border-top: 1px solid var(--stroke);
+  backdrop-filter: blur(8px);
+}
+
+.build-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 92px;
+  padding: 8px 6px;
+  border-radius: var(--radius);
+  border: 1px solid var(--stroke);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform .08s, border-color .15s, box-shadow .15s;
+}
+.build-btn:hover { transform: translateY(-2px); }
+.build-btn.selected {
+  border-color: var(--oxygen);
+  box-shadow: 0 0 0 2px var(--oxygen), 0 0 18px rgba(79,227,193,0.5);
+}
+.build-btn.cant { opacity: 0.45; }
+.build-btn .b-icon { font-size: 26px; line-height: 1; }
+.build-btn .b-name { font-size: 12px; font-weight: 800; }
+.build-btn .b-cost { font-size: 11px; color: var(--muted); }
+.build-btn .b-cost .ok  { color: var(--good); }
+.build-btn .b-cost .no  { color: var(--bad); }
+
+/* terrain + demolish tools at the end of the dock */
+.build-btn.tool-terra.selected {
+  border-color: var(--good);
+  box-shadow: 0 0 0 2px var(--good), 0 0 18px rgba(95,240,138,0.5);
+}
+.build-btn.tool-cleanse.selected {
+  border-color: #78c8ff;
+  box-shadow: 0 0 0 2px #78c8ff, 0 0 18px rgba(120,200,255,0.5);
+}
+.build-btn.tool-demolish.selected {
+  border-color: var(--bad);
+  box-shadow: 0 0 0 2px var(--bad), 0 0 18px rgba(255,107,107,0.5);
+}
+
+/* Build hint that follows the build mode */
+#build-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 96px;
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 8px 16px;
+  background: var(--panel-2);
+  border: 1px solid var(--oxygen);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ----------------------------- INFO PANEL ----------------------------- */
+#info-panel {
+  position: absolute;
+  z-index: 7;
+  top: 76px;
+  right: 12px;
+  width: 220px;
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  animation: pop .25s ease;
+}
+.info-x {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  border: 1px solid var(--stroke);
+  background: var(--panel-2);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+}
+.info-head { display: flex; align-items: center; gap: 8px; }
+.info-head span { font-size: 26px; }
+.info-head b { font-size: 15px; }
+.info-desc { color: var(--muted); font-size: 12px; margin: 8px 0 10px; }
+.info-stats { display: grid; gap: 6px; margin-bottom: 12px; }
+.info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px;
+  padding: 6px 9px;
+  background: var(--panel-2);
+  border-radius: 9px;
+}
+.info-row b.up   { color: var(--good); }
+.info-row b.down { color: var(--bad); }
+.info-demolish {
+  width: 100%;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px solid var(--bad);
+  background: rgba(255,107,107,0.14);
+  color: var(--bad);
+  font-weight: 800;
+  cursor: pointer;
+}
+.info-demolish:hover { background: rgba(255,107,107,0.26); }
+
+@media (max-width: 560px) {
+  #info-panel {
+    top: auto;
+    bottom: 96px;
+    right: 8px; left: 8px;
+    width: auto;
+  }
+  .info-stats { grid-auto-flow: column; }   /* compact: stats side by side */
+}
+
+/* ----------------------------- TOASTS ----------------------------- */
+#toasts {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+  width: min(92%, 420px);
+}
+.toast {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--stroke);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  animation: toast-in .35s ease, toast-out .5s ease forwards;
+  animation-delay: 0s, 4s;
+}
+.toast .t-icon { font-size: 22px; }
+.toast .t-text b { display: block; font-size: 14px; }
+.toast .t-text span { font-size: 12px; color: var(--muted); }
+.toast.good  { border-color: var(--good); }
+.toast.bad   { border-color: var(--bad); }
+.toast.info  { border-color: var(--science); }
+@keyframes toast-in  { from { opacity:0; transform: translateY(-12px) scale(.96);} to {opacity:1;} }
+@keyframes toast-out { to { opacity:0; transform: translateY(-12px) scale(.96);} }
+
+/* ----------------------------- PANELS ----------------------------- */
+.panel {
+  position: absolute;
+  z-index: 8;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(94%, 520px);
+  max-height: 78vh;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  backdrop-filter: blur(14px);
+}
+.panel-head { display: flex; justify-content: space-between; align-items: center; }
+.panel-head h2 { margin: 0; font-size: 18px; }
+.panel-sub { color: var(--muted); font-size: 13px; margin: 6px 0 14px; }
+
+#tech-list { display: grid; gap: 10px; }
+.tech {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--stroke);
+}
+.tech .t-emoji { font-size: 26px; }
+.tech .t-body { flex: 1; }
+.tech .t-body b { font-size: 14px; }
+.tech .t-body p { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+.tech .t-buy {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  background: var(--science);
+  color: #1a1140;
+  white-space: nowrap;
+}
+.tech .t-buy:disabled { opacity: .45; cursor: not-allowed; }
+.tech.done { opacity: .8; }
+.tech.done .t-buy { background: var(--good); color:#0d2a14; }
+
+/* ----------------------------- OVERLAY ----------------------------- */
+#overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10,6,30,0.82);
+  backdrop-filter: blur(6px);
+}
+.overlay-card {
+  text-align: center;
+  padding: 32px 28px;
+  background: var(--panel);
+  border: 1px solid var(--stroke);
+  border-radius: 22px;
+  max-width: 90%;
+  animation: pop .4s ease;
+}
+.overlay-card h1 { font-family: var(--pixel); font-size: 22px; line-height: 1.6; margin: 0 0 12px; }
+.overlay-card p  { color: var(--muted); margin: 0 0 22px; font-size: 15px; }
+.big-btn {
+  font-size: 16px;
+  font-weight: 800;
+  padding: 14px 26px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--oxygen), var(--science));
+  color: #131038;
+}
+.big-btn:active { transform: scale(0.96); }
+@keyframes pop { from { transform: scale(.85); opacity: 0; } }
+
+.hidden { display: none !important; }
+
+/* ----------------------------- MOBILE ----------------------------- */
+@media (max-width: 560px) {
+  .hud-title { font-size: 9px; }
+  .res { min-width: 78px; padding: 5px 9px; }
+  .res-val { font-size: 14px; }
+  .ctrl { width: 36px; height: 36px; font-size: 16px; }
+  .build-btn { width: 76px; }
+}

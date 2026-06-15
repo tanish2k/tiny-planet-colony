@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tiny Planet Colony 🌍</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- ======================= GAME ROOT ======================= -->
+  <div id="game">
+
+    <!-- Top HUD: resource readouts -->
+    <header id="hud">
+      <div class="hud-title">🌍 Tiny&nbsp;Planet&nbsp;Colony</div>
+      <div id="clock" class="clock"><span id="clock-icon">🌅</span><span id="clock-text">Sol 1 · Dawn</span></div>
+      <div id="objective" class="objective">
+        <span class="obj green" title="Planet reclaimed (goal 55%)">🌱 <b id="obj-green">0%</b></span>
+        <span class="obj threat" title="Corruption spread">☣️ <b id="obj-threat">0%</b></span>
+      </div>
+      <div class="resources">
+        <div class="res" id="res-energy" title="Energy">
+          <span class="res-icon">⚡</span>
+          <span class="res-info"><b class="res-val">0</b><i class="res-rate">+0/s</i></span>
+        </div>
+        <div class="res" id="res-oxygen" title="Oxygen">
+          <span class="res-icon">🫧</span>
+          <span class="res-info"><b class="res-val">0</b><i class="res-rate">+0/s</i></span>
+        </div>
+        <div class="res" id="res-science" title="Science">
+          <span class="res-icon">🔬</span>
+          <span class="res-info"><b class="res-val">0</b><i class="res-rate">+0/s</i></span>
+        </div>
+        <div class="res" id="res-pop" title="Colonists">
+          <span class="res-icon">🧑‍🚀</span>
+          <span class="res-info"><b class="res-val">0</b><i class="res-rate">/ 0</i></span>
+        </div>
+      </div>
+      <div class="hud-controls">
+        <button id="btn-speed" class="ctrl" title="Pause / Play (Space)">⏸</button>
+        <button id="btn-ff" class="ctrl" title="Game speed">1×</button>
+        <button id="btn-tech" class="ctrl" title="Research">🧪<span id="tech-badge" class="badge">0/8</span></button>
+        <button id="btn-save" class="ctrl" title="Save">💾</button>
+        <button id="btn-reset" class="ctrl" title="New Colony">🔄</button>
+      </div>
+    </header>
+
+    <!-- The isometric world -->
+    <canvas id="world"></canvas>
+
+    <!-- Floating toast notifications for events -->
+    <div id="toasts"></div>
+
+    <!-- Bottom build dock -->
+    <footer id="dock"></footer>
+
+    <!-- Tooltip shown while a build is selected -->
+    <div id="build-hint" class="hidden"></div>
+
+    <!-- Building info popover (shown when a building is tapped) -->
+    <div id="info-panel" class="hidden">
+      <button id="info-close" class="info-x">✕</button>
+      <div class="info-head"><span id="info-icon">🏠</span><b id="info-name">Building</b></div>
+      <p id="info-desc" class="info-desc"></p>
+      <div id="info-stats" class="info-stats"></div>
+      <button id="info-demolish" class="info-demolish">🚧 Demolish (refund 50%)</button>
+    </div>
+
+    <!-- ======================= RESEARCH PANEL ======================= -->
+    <div id="tech-panel" class="panel hidden">
+      <div class="panel-head">
+        <h2>🧪 Research Lab</h2>
+        <button id="tech-close" class="ctrl">✕</button>
+      </div>
+      <p class="panel-sub">Spend 🔬 Science to unlock permanent colony upgrades.</p>
+      <div id="tech-list"></div>
+    </div>
+
+    <!-- ======================= WIN / LOSE OVERLAY ======================= -->
+    <div id="overlay" class="hidden">
+      <div class="overlay-card">
+        <h1 id="overlay-title">Game Over</h1>
+        <p id="overlay-msg"></p>
+        <button id="overlay-btn" class="big-btn">Start New Colony</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts loaded in dependency order (plain globals, no modules,
+       so the game also runs by simply opening index.html) -->
+  <script src="js/config.js"></script>
+  <script src="js/iso.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/economy.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/colonists.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
